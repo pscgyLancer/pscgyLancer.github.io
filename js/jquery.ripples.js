@@ -30,7 +30,7 @@ function loadConfig() {
 		'OES_texture_half_float',
 		'OES_texture_float_linear',
 		'OES_texture_half_float_linear'
-	].forEach(function(name) {
+	].forEach(function (name) {
 		var extension = gl.getExtension(name);
 		if (extension) {
 			extensions[name] = extension;
@@ -46,9 +46,9 @@ function loadConfig() {
 
 	function createConfig(type, glType, arrayType) {
 		var name = 'OES_texture_' + type,
-				nameLinear = name + '_linear',
-				linearSupport = nameLinear in extensions,
-				configExtensions = [name];
+			nameLinear = name + '_linear',
+			linearSupport = nameLinear in extensions,
+			configExtensions = [name];
 
 		if (linearSupport) {
 			configExtensions.push(nameLinear);
@@ -116,6 +116,7 @@ function createImageData(width, height) {
 function translateBackgroundPosition(value) {
 	var parts = value.split(' ');
 
+
 	if (parts.length === 1) {
 		switch (value) {
 			case 'center':
@@ -133,7 +134,7 @@ function translateBackgroundPosition(value) {
 		}
 	}
 	else {
-		return parts.map(function(part) {
+		return parts.map(function (part) {
 			switch (value) {
 				case 'center':
 					return '50%';
@@ -247,7 +248,7 @@ var Ripples = function (el, options) {
 	this.context = gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
 
 	// Load extensions
-	config.extensions.forEach(function(name) {
+	config.extensions.forEach(function (name) {
 		gl.getExtension(name);
 	});
 
@@ -336,7 +337,7 @@ Ripples.DEFAULTS = {
 Ripples.prototype = {
 
 	// Set up pointer (mouse + touch) events
-	setupPointerEvents: function() {
+	setupPointerEvents: function () {
 		var that = this;
 
 		function pointerEventsEnabled() {
@@ -357,10 +358,10 @@ Ripples.prototype = {
 		this.$el
 
 			// Create regular, small ripples for mouse move and touch events...
-			.on('mousemove.ripples', function(e) {
+			.on('mousemove.ripples', function (e) {
 				dropAtPointer(e);
 			})
-			.on('touchmove.ripples touchstart.ripples', function(e) {
+			.on('touchmove.ripples touchstart.ripples', function (e) {
 				var touches = e.originalEvent.changedTouches;
 				for (var i = 0; i < touches.length; i++) {
 					dropAtPointer(touches[i]);
@@ -368,13 +369,13 @@ Ripples.prototype = {
 			})
 
 			// ...and only a big ripple on mouse down events.
-			.on('mousedown.ripples', function(e) {
+			.on('mousedown.ripples', function (e) {
 				dropAtPointer(e, true);
 			});
 	},
 
 	// Load the image either from the options or the element's CSS rules.
-	loadImage: function() {
+	loadImage: function () {
 		var that = this;
 
 		gl = this.context;
@@ -398,7 +399,7 @@ Ripples.prototype = {
 
 		// Load the texture from a new image.
 		var image = new Image;
-		image.onload = function() {
+		image.onload = function () {
 			gl = that.context;
 
 			// Only textures with dimensions of powers of two can have repeat wrapping.
@@ -421,7 +422,7 @@ Ripples.prototype = {
 		};
 
 		// Fall back to a transparent texture when loading the image failed.
-		image.onerror = function() {
+		image.onerror = function () {
 			gl = that.context;
 
 			that.setTransparentTexture();
@@ -433,7 +434,7 @@ Ripples.prototype = {
 		image.src = this.imageSource;
 	},
 
-	step: function() {
+	step: function () {
 		gl = this.context;
 
 		if (!this.visible) {
@@ -449,13 +450,13 @@ Ripples.prototype = {
 		this.render();
 	},
 
-	drawQuad: function() {
+	drawQuad: function () {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.quad);
 		gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
 		gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
 	},
 
-	render: function() {
+	render: function () {
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
 		gl.viewport(0, 0, this.canvas.width, this.canvas.height);
@@ -479,7 +480,7 @@ Ripples.prototype = {
 		gl.disable(gl.BLEND);
 	},
 
-	update: function() {
+	update: function () {
 		gl.viewport(0, 0, this.resolution, this.resolution);
 
 		gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffers[this.bufferWriteIndex]);
@@ -491,12 +492,12 @@ Ripples.prototype = {
 		this.swapBufferIndices();
 	},
 
-	swapBufferIndices: function() {
+	swapBufferIndices: function () {
 		this.bufferWriteIndex = 1 - this.bufferWriteIndex;
 		this.bufferReadIndex = 1 - this.bufferReadIndex;
 	},
 
-	computeTextureBoundaries: function() {
+	computeTextureBoundaries: function () {
 		var backgroundSize = this.$el.css('background-size');
 		var backgroundAttachment = this.$el.css('background-attachment');
 		var backgroundPosition = translateBackgroundPosition(this.$el.css('background-position'));
@@ -599,13 +600,13 @@ Ripples.prototype = {
 		]);
 	},
 
-	initShaders: function() {
+	initShaders: function () {
 		var vertexShader = [
 			'attribute vec2 vertex;',
 			'varying vec2 coord;',
 			'void main() {',
-				'coord = vertex * 0.5 + 0.5;',
-				'gl_Position = vec4(vertex, 0.0, 1.0);',
+			'coord = vertex * 0.5 + 0.5;',
+			'gl_Position = vec4(vertex, 0.0, 1.0);',
 			'}'
 		].join('\n');
 
@@ -621,14 +622,14 @@ Ripples.prototype = {
 			'varying vec2 coord;',
 
 			'void main() {',
-				'vec4 info = texture2D(texture, coord);',
+			'vec4 info = texture2D(texture, coord);',
 
-				'float drop = max(0.0, 1.0 - length(center * 0.5 + 0.5 - coord) / radius);',
-				'drop = 0.5 - cos(drop * PI) * 0.5;',
+			'float drop = max(0.0, 1.0 - length(center * 0.5 + 0.5 - coord) / radius);',
+			'drop = 0.5 - cos(drop * PI) * 0.5;',
 
-				'info.r += drop * strength;',
+			'info.r += drop * strength;',
 
-				'gl_FragColor = info;',
+			'gl_FragColor = info;',
 			'}'
 		].join('\n'));
 
@@ -641,23 +642,23 @@ Ripples.prototype = {
 			'varying vec2 coord;',
 
 			'void main() {',
-				'vec4 info = texture2D(texture, coord);',
+			'vec4 info = texture2D(texture, coord);',
 
-				'vec2 dx = vec2(delta.x, 0.0);',
-				'vec2 dy = vec2(0.0, delta.y);',
+			'vec2 dx = vec2(delta.x, 0.0);',
+			'vec2 dy = vec2(0.0, delta.y);',
 
-				'float average = (',
-					'texture2D(texture, coord - dx).r +',
-					'texture2D(texture, coord - dy).r +',
-					'texture2D(texture, coord + dx).r +',
-					'texture2D(texture, coord + dy).r',
-				') * 0.25;',
+			'float average = (',
+			'texture2D(texture, coord - dx).r +',
+			'texture2D(texture, coord - dy).r +',
+			'texture2D(texture, coord + dx).r +',
+			'texture2D(texture, coord + dy).r',
+			') * 0.25;',
 
-				'info.g += (average - info.r) * 2.0;',
-				'info.g *= 0.995;',
-				'info.r += info.g;',
+			'info.g += (average - info.r) * 2.0;',
+			'info.g *= 0.995;',
+			'info.r += info.g;',
 
-				'gl_FragColor = info;',
+			'gl_FragColor = info;',
 			'}'
 		].join('\n'));
 		gl.uniform2fv(this.updateProgram.locations.delta, this.textureDelta);
@@ -672,10 +673,10 @@ Ripples.prototype = {
 			'varying vec2 ripplesCoord;',
 			'varying vec2 backgroundCoord;',
 			'void main() {',
-				'backgroundCoord = mix(topLeft, bottomRight, vertex * 0.5 + 0.5);',
-				'backgroundCoord.y = 1.0 - backgroundCoord.y;',
-				'ripplesCoord = vec2(vertex.x, -vertex.y) * containerRatio * 0.5 + 0.5;',
-				'gl_Position = vec4(vertex.x, -vertex.y, 0.0, 1.0);',
+			'backgroundCoord = mix(topLeft, bottomRight, vertex * 0.5 + 0.5);',
+			'backgroundCoord.y = 1.0 - backgroundCoord.y;',
+			'ripplesCoord = vec2(vertex.x, -vertex.y) * containerRatio * 0.5 + 0.5;',
+			'gl_Position = vec4(vertex.x, -vertex.y, 0.0, 1.0);',
 			'}'
 		].join('\n'), [
 			'precision highp float;',
@@ -689,20 +690,20 @@ Ripples.prototype = {
 			'varying vec2 backgroundCoord;',
 
 			'void main() {',
-				'float height = texture2D(samplerRipples, ripplesCoord).r;',
-				'float heightX = texture2D(samplerRipples, vec2(ripplesCoord.x + delta.x, ripplesCoord.y)).r;',
-				'float heightY = texture2D(samplerRipples, vec2(ripplesCoord.x, ripplesCoord.y + delta.y)).r;',
-				'vec3 dx = vec3(delta.x, heightX - height, 0.0);',
-				'vec3 dy = vec3(0.0, heightY - height, delta.y);',
-				'vec2 offset = -normalize(cross(dy, dx)).xz;',
-				'float specular = pow(max(0.0, dot(offset, normalize(vec2(-0.6, 1.0)))), 4.0);',
-				'gl_FragColor = texture2D(samplerBackground, backgroundCoord + offset * perturbance) + specular;',
+			'float height = texture2D(samplerRipples, ripplesCoord).r;',
+			'float heightX = texture2D(samplerRipples, vec2(ripplesCoord.x + delta.x, ripplesCoord.y)).r;',
+			'float heightY = texture2D(samplerRipples, vec2(ripplesCoord.x, ripplesCoord.y + delta.y)).r;',
+			'vec3 dx = vec3(delta.x, heightX - height, 0.0);',
+			'vec3 dy = vec3(0.0, heightY - height, delta.y);',
+			'vec2 offset = -normalize(cross(dy, dx)).xz;',
+			'float specular = pow(max(0.0, dot(offset, normalize(vec2(-0.6, 1.0)))), 4.0);',
+			'gl_FragColor = texture2D(samplerBackground, backgroundCoord + offset * perturbance) + specular;',
 			'}'
 		].join('\n'));
 		gl.uniform2fv(this.renderProgram.locations.delta, this.textureDelta);
 	},
 
-	initTexture: function() {
+	initTexture: function () {
 		this.backgroundTexture = gl.createTexture();
 		gl.bindTexture(gl.TEXTURE_2D, this.backgroundTexture);
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
@@ -710,12 +711,12 @@ Ripples.prototype = {
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 	},
 
-	setTransparentTexture: function() {
+	setTransparentTexture: function () {
 		gl.bindTexture(gl.TEXTURE_2D, this.backgroundTexture);
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, transparentPixels);
 	},
 
-	hideCssBackground: function() {
+	hideCssBackground: function () {
 
 		// Check whether we're changing inline CSS or overriding a global CSS rule.
 		var inlineCss = this.$el[0].style.backgroundImage;
@@ -730,16 +731,16 @@ Ripples.prototype = {
 		this.$el.css('backgroundImage', 'none');
 	},
 
-	restoreCssBackground: function() {
+	restoreCssBackground: function () {
 
 		// Restore background by either changing the inline CSS rule to what it was, or
 		// simply remove the inline CSS rule if it never was inlined.
 		this.$el.css('backgroundImage', this.originalInlineCss || '');
 	},
 
-	dropAtPointer: function(pointer, radius, strength) {
+	dropAtPointer: function (pointer, radius, strength) {
 		var borderLeft = parseInt(this.$el.css('border-left-width')) || 0,
-				borderTop = parseInt(this.$el.css('border-top-width')) || 0;
+			borderTop = parseInt(this.$el.css('border-top-width')) || 0;
 
 		this.drop(
 			pointer.pageX - this.$el.offset().left - borderLeft,
@@ -752,7 +753,7 @@ Ripples.prototype = {
 	/**
 	 *  Public methods
 	 */
-	drop: function(x, y, radius, strength) {
+	drop: function (x, y, radius, strength) {
 		gl = this.context;
 
 		var elWidth = this.$el.innerWidth();
@@ -781,9 +782,9 @@ Ripples.prototype = {
 		this.swapBufferIndices();
 	},
 
-	updateSize: function() {
+	updateSize: function () {
 		var newWidth = this.$el.innerWidth(),
-				newHeight = this.$el.innerHeight();
+			newHeight = this.$el.innerHeight();
 
 		if (newWidth != this.canvas.width || newHeight != this.canvas.height) {
 			this.canvas.width = newWidth;
@@ -791,7 +792,7 @@ Ripples.prototype = {
 		}
 	},
 
-	destroy: function() {
+	destroy: function () {
 		this.$el
 			.off('.ripples')
 			.removeClass('jquery-ripples')
@@ -808,29 +809,29 @@ Ripples.prototype = {
 		this.destroyed = true;
 	},
 
-	show: function() {
+	show: function () {
 		this.visible = true;
 
 		this.$canvas.show();
 		this.hideCssBackground();
 	},
 
-	hide: function() {
+	hide: function () {
 		this.visible = false;
 
 		this.$canvas.hide();
 		this.restoreCssBackground();
 	},
 
-	pause: function() {
+	pause: function () {
 		this.running = false;
 	},
 
-	play: function() {
+	play: function () {
 		this.running = true;
 	},
 
-	set: function(property, value) {
+	set: function (property, value) {
 		switch (property) {
 			case 'dropRadius':
 			case 'perturbance':
@@ -851,17 +852,17 @@ Ripples.prototype = {
 
 var old = $.fn.ripples;
 
-$.fn.ripples = function(option) {
+$.fn.ripples = function (option) {
 	if (!config) {
 		throw new Error('Your browser does not support WebGL, the OES_texture_float extension or rendering to floating point textures.');
 	}
 
 	var args = (arguments.length > 1) ? Array.prototype.slice.call(arguments, 1) : undefined;
 
-	return this.each(function() {
+	return this.each(function () {
 		var $this = $(this),
-				data = $this.data('ripples'),
-				options = $.extend({}, Ripples.DEFAULTS, $this.data(), typeof option == 'object' && option);
+			data = $this.data('ripples'),
+			options = $.extend({}, Ripples.DEFAULTS, $this.data(), typeof option == 'object' && option);
 
 		if (!data && typeof option == 'string') {
 			return;
@@ -881,22 +882,22 @@ $.fn.ripples.Constructor = Ripples;
 // RIPPLES NO CONFLICT 
 // ====================
 
-$.fn.ripples.noConflict = function() {
+$.fn.ripples.noConflict = function () {
 	$.fn.ripples = old;
 	return this;
 };
 
 var userAgentInfo = navigator.userAgent;
 var Agents = ["Android", "iPhone",
-   "SymbianOS", "Windows Phone",
-   "iPad", "iPod"];
-   var ispc=true;
+	"SymbianOS", "Windows Phone",
+	"iPad", "iPod"];
+var ispc = true;
 for (var v = 0; v < Agents.length; v++) {
-   if (userAgentInfo.indexOf(Agents[v]) > 0) {
-       ispc=false;
-       break;
-    }
+	if (userAgentInfo.indexOf(Agents[v]) > 0) {
+		ispc = false;
+		break;
+	}
 }
-if(ispc){
-$('#nav').ripples({resolution: 512,dropRadius: 20,perturbance: 0.03});
-$('#footer').ripples({resolution: 512,dropRadius: 20,perturbance: 0.03});
+if (ispc) {
+	$('#nav').ripples({ resolution: 512, dropRadius: 20, perturbance: 0.03 });
+	$('#footer').ripples({ resolution: 512, dropRadius: 20, perturbance: 0.03 });
