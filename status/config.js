@@ -12,12 +12,13 @@ window.Config = {
   // 因官网 API 时不时的会 CROS 报错，可填自定义反代域名
   // 详见 https://github.com/yb/uptime-status/ 说明
   //ApiDomain: 'status.pscgylancer.workers.dev',
-  ApiDomain: 'status.pscgylancer.site',
+  ApiDomain: 'status.pscgylancer.cn',
 
   // UptimeRobot Api Keys
   // 支持 Monitor-Specific 和 Read-Only 两只 Api Key
   ApiKeys: [
-    'u1318716-b7bed9a03d8926457e476f6c'
+    'm795154176-9d1b9ddd3ffa1a8ed5d09a75',
+    'ur1318716-425b44376ad7dbc578c37841'
   ],
 
   // 是否显示监测站点的链接
@@ -32,7 +33,7 @@ window.Config = {
   Navi: [
     {
       text: 'Blog',
-      url: 'https://pscgylancer.site/'
+      url: 'https://blog.pscgylancer.cn/'
     },
 	{
       text: 'GitHub',
